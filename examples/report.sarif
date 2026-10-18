@@ -21,7 +21,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-001",
        "help": {
-        "text": "Bash, Bash(*), Bash(:*) or the PowerShell equivalents in permissions.allow let every shell command run without a prompt."
+        "text": "Trigger: Bash, Bash(*), Bash(:*), PowerShell, PowerShell(*) in permissions.allow\n\nAny shell command runs without a prompt",
+        "markdown": "**Trigger:** `Bash`, `Bash(*)`, `Bash(:*)`, `PowerShell`, `PowerShell(*)` in `permissions.allow`\n\nAny shell command runs without a prompt"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -47,7 +48,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-002",
        "help": {
-        "text": "A program such as rm, sudo, curl, bash or a package manager, or an environment runner such as npx, docker exec or devbox run, is pre-approved with a wildcard, so one injected instruction becomes an executed command."
+        "text": "Trigger: A risky program pre-approved with a wildcard (rm *, rm:*, rm*, git * main): rm, sudo, curl, wget, nc, bash, eval, dd, python and others at high, package managers, cloud CLIs, git, docker at medium; an environment runner with a wildcard (npx *, docker exec *, devbox run *, direnv exec *, mise exec *, uv run *, xargs *) at high; a rule that starts with * at high. Wrappers Claude Code strips before matching (timeout, time, nice, nohup, stdbuf, command, builtin, noglob, VAR=value) are skipped to find the program. PowerShell rules are read the same way\n\nOne injected instruction becomes an executed command. Claude Code treats :* as a trailing  * and runners execute whatever follows them ([permissions](https://code.claude.com/docs/en/permissions#wildcard-patterns))",
+        "markdown": "**Trigger:** A risky program pre-approved with a wildcard (`rm *`, `rm:*`, `rm*`, `git * main`): `rm`, `sudo`, `curl`, `wget`, `nc`, `bash`, `eval`, `dd`, `python` and others at high, package managers, cloud CLIs, `git`, `docker` at medium; an environment runner with a wildcard (`npx *`, `docker exec *`, `devbox run *`, `direnv exec *`, `mise exec *`, `uv run *`, `xargs *`) at high; a rule that starts with `*` at high. Wrappers Claude Code strips before matching (`timeout`, `time`, `nice`, `nohup`, `stdbuf`, `command`, `builtin`, `noglob`, `VAR=value`) are skipped to find the program. PowerShell rules are read the same way\n\nOne injected instruction becomes an executed command. Claude Code treats `:*` as a trailing ` *` and runners execute whatever follows them ([permissions](https://code.claude.com/docs/en/permissions#wildcard-patterns))"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -73,7 +75,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-003",
        "help": {
-        "text": "defaultMode bypassPermissions or auto, permissionMode bypassPermissions or auto in agent front matter, or a Codex approval policy of never removes the human from the loop. Project settings are reported lower because current Claude Code ignores both modes there."
+        "text": "Trigger: defaultMode: bypassPermissions (critical in user or extra settings, high in project .claude/settings*.json) or auto (medium, low in project settings); permissionMode: bypassPermissions or auto in a non-plugin agent file (medium); skipDangerousModePermissionPrompt; Codex approval_policy = never. default, manual, acceptEdits, plan and dontAsk (which only denies) are not reported\n\nRemoves the human from the loop. Claude Code v2.1.257 and later ignore auto and bypassPermissions in project and local settings ([settings](https://code.claude.com/docs/en/settings)), and plugin subagents ignore permissionMode ([subagents](https://code.claude.com/docs/en/sub-agents)), so those cases are reported lower or not at all",
+        "markdown": "**Trigger:** `defaultMode: bypassPermissions` (critical in user or extra settings, high in project `.claude/settings*.json`) or `auto` (medium, low in project settings); `permissionMode: bypassPermissions` or `auto` in a non-plugin agent file (medium); `skipDangerousModePermissionPrompt`; Codex `approval_policy = never`. `default`, `manual`, `acceptEdits`, `plan` and `dontAsk` (which only denies) are not reported\n\nRemoves the human from the loop. Claude Code v2.1.257 and later ignore `auto` and `bypassPermissions` in project and local settings ([settings](https://code.claude.com/docs/en/settings)), and plugin subagents ignore `permissionMode` ([subagents](https://code.claude.com/docs/en/sub-agents)), so those cases are reported lower or not at all"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -99,7 +102,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-004",
        "help": {
-        "text": "The agent can rewrite its own hooks and settings."
+        "text": "Trigger: Write, Edit allowed for every path\n\nThe agent can rewrite its own hooks and settings",
+        "markdown": "**Trigger:** `Write`, `Edit` allowed for every path\n\nThe agent can rewrite its own hooks and settings"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -125,7 +129,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-005",
        "help": {
-        "text": "Unrestricted WebFetch or WebSearch is a data-exfiltration channel under prompt injection."
+        "text": "Trigger: WebFetch, WebSearch allowed for every domain\n\nExfiltration channel under injection",
+        "markdown": "**Trigger:** `WebFetch`, `WebSearch` allowed for every domain\n\nExfiltration channel under injection"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -151,7 +156,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-006",
        "help": {
-        "text": "Every tool of the server, including write and delete tools, runs without a prompt."
+        "text": "Trigger: A whole named MCP server allowed (mcp__name, mcp__name__*)\n\nWrite and delete tools run without a prompt",
+        "markdown": "**Trigger:** A whole named MCP server allowed (`mcp__name`, `mcp__name__*`)\n\nWrite and delete tools run without a prompt"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -177,7 +183,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-007",
        "help": {
-        "text": "A cloned repository's .mcp.json would start processes automatically."
+        "text": "Trigger: enableAllProjectMcpServers: true\n\nA cloned repo's .mcp.json starts processes automatically",
+        "markdown": "**Trigger:** `enableAllProjectMcpServers: true`\n\nA cloned repo's `.mcp.json` starts processes automatically"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -203,7 +210,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-008",
        "help": {
-        "text": "Guard hooks such as secret-exposure blocking do not run."
+        "text": "Trigger: disableAllHooks: true\n\nGuard hooks do not run",
+        "markdown": "**Trigger:** `disableAllHooks: true`\n\nGuard hooks do not run"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -229,7 +237,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-009",
        "help": {
-        "text": "A pre-approved command carries a flag such as --dangerously-skip-permissions."
+        "text": "Trigger: An allow rule carries --dangerously-skip-permissions or similar\n\nBypass flag baked into a pre-approval",
+        "markdown": "**Trigger:** An allow rule carries `--dangerously-skip-permissions` or similar\n\nBypass flag baked into a pre-approval"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -255,7 +264,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-010",
        "help": {
-        "text": "additionalDirectories includes /, ~ or the home directory."
+        "text": "Trigger: additionalDirectories includes /, ~ or the home directory\n\nWhole-disk read and write scope",
+        "markdown": "**Trigger:** `additionalDirectories` includes `/`, `~` or the home directory\n\nWhole-disk read and write scope"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -281,7 +291,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-011",
        "help": {
-        "text": "There is no backstop for the obvious disasters."
+        "text": "Trigger: Broad allow rules and no deny rules\n\nNo backstop for the obvious disasters",
+        "markdown": "**Trigger:** Broad allow rules and no deny rules\n\nNo backstop for the obvious disasters"
        },
        "defaultConfiguration": {
         "level": "note"
@@ -307,7 +318,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-012",
        "help": {
-        "text": "A Read allow rule covers environment files, credential stores or private-key paths."
+        "text": "Trigger: Read(...) in permissions.allow names .env*, .ssh, .aws, .netrc, *.pem, *.key, id_rsa or id_ed25519; .env components ending in .example, .sample or .template are excluded\n\nSecrets reach the model without a prompt. This checks explicit path shapes, not file contents or every wildcard expansion",
+        "markdown": "**Trigger:** `Read(...)` in `permissions.allow` names `.env*`, `.ssh`, `.aws`, `.netrc`, `*.pem`, `*.key`, `id_rsa` or `id_ed25519`; `.env` components ending in `.example`, `.sample` or `.template` are excluded\n\nSecrets reach the model without a prompt. This checks explicit path shapes, not file contents or every wildcard expansion"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -333,7 +345,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#perm-013",
        "help": {
-        "text": "A deny or ask rule in a shape Claude Code skips (an mcp__ rule with parentheses, a parameter rule on a primary field such as Bash(command:...), :* in the middle of a pattern), so the restriction does not hold; allow rules of these shapes and unanchored allow globs such as * or mcp__* do nothing."
+        "text": "Trigger: A rule shape Claude Code skips or never matches: an mcp__ rule with parentheses, a parameter rule on a primary field (Bash(command:...), Read(file_path:...), WebFetch(url:...)), :* in the middle of a pattern (Bash(git:* push)), and in allow an unanchored tool-name glob (*, B*, mcp__*). Medium in deny and ask, info in allow\n\nA deny rule that is skipped gives a false sense of safety ([permissions](https://code.claude.com/docs/en/permissions#tool-name-wildcards))",
+        "markdown": "**Trigger:** A rule shape Claude Code skips or never matches: an `mcp__` rule with parentheses, a parameter rule on a primary field (`Bash(command:...)`, `Read(file_path:...)`, `WebFetch(url:...)`), `:*` in the middle of a pattern (`Bash(git:* push)`), and in `allow` an unanchored tool-name glob (`*`, `B*`, `mcp__*`). Medium in `deny` and `ask`, info in `allow`\n\nA deny rule that is skipped gives a false sense of safety ([permissions](https://code.claude.com/docs/en/permissions#tool-name-wildcards))"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -359,7 +372,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#hook-001",
        "help": {
-        "text": "The control the hook was meant to add is absent; failure mode depends on the host."
+        "text": "Trigger: Command or first exec-form argument points at a script that does not exist\n\nThe control is absent; failure mode depends on the host",
+        "markdown": "**Trigger:** Command or first exec-form argument points at a script that does not exist\n\nThe control is absent; failure mode depends on the host"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -385,7 +399,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#hook-002",
        "help": {
-        "text": "Hook input contains commands, paths and prompts; a hook that calls curl, ssh or a remote URL, or an http hook, can exfiltrate them. Settings helpers, plugin monitors and LSP server commands are checked the same way."
+        "text": "Trigger: Hook command uses curl, wget, ssh, nc; an http hook to a non-loopback URL (high) or to loopback (low); a hook script that can reach the network (medium); a settings helper (apiKeyHelper, awsAuthRefresh, awsCredentialExport, gcpAuthRefresh, otelHeadersHelper, statusLine, fileSuggestion, subagentStatusLine), plugin monitor or LSP server command that can reach the network\n\nHook input contains commands, paths and prompts; an http hook POSTs it by definition ([hooks](https://code.claude.com/docs/en/hooks))",
+        "markdown": "**Trigger:** Hook command uses `curl`, `wget`, `ssh`, `nc`; an `http` hook to a non-loopback URL (high) or to loopback (low); a hook script that can reach the network (medium); a settings helper (`apiKeyHelper`, `awsAuthRefresh`, `awsCredentialExport`, `gcpAuthRefresh`, `otelHeadersHelper`, `statusLine`, `fileSuggestion`, `subagentStatusLine`), plugin monitor or LSP server command that can reach the network\n\nHook input contains commands, paths and prompts; an `http` hook POSTs it by definition ([hooks](https://code.claude.com/docs/en/hooks))"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -411,7 +426,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#hook-003",
        "help": {
-        "text": "A known credential format sits in a settings file."
+        "text": "Trigger: A known credential format inside a hook, helper, monitor or LSP command; a literal token in an http hook header instead of $VAR with allowedEnvVars\n\nSecret in a settings file",
+        "markdown": "**Trigger:** A known credential format inside a hook, helper, monitor or LSP command; a literal token in an `http` hook header instead of `$VAR` with `allowedEnvVars`\n\nSecret in a settings file"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -437,7 +453,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#hook-004",
        "help": {
-        "text": "Remote code runs on every tool call."
+        "text": "Trigger: curl ... \\| sh style in a hook\n\nRemote code on every tool call",
+        "markdown": "**Trigger:** `curl ... \\| sh` style in a hook\n\nRemote code on every tool call"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -463,7 +480,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#hook-005",
        "help": {
-        "text": "Breaks on paths with spaces."
+        "text": "Trigger: Shell-form hook with unquoted ${CLAUDE_PLUGIN_ROOT}\n\nBreaks on paths with spaces",
+        "markdown": "**Trigger:** Shell-form hook with unquoted `${CLAUDE_PLUGIN_ROOT}`\n\nBreaks on paths with spaces"
        },
        "defaultConfiguration": {
         "level": "note"
@@ -489,7 +507,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#hook-006",
        "help": {
-        "text": "Anyone local can change what runs on every tool call."
+        "text": "Trigger: Hook script is world-writable\n\nAnyone local can change what runs on every tool call",
+        "markdown": "**Trigger:** Hook script is world-writable\n\nAnyone local can change what runs on every tool call"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -515,7 +534,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#hook-007",
        "help": {
-        "text": "Claude Code ignores hook entries under an event name it does not know, so the hook never runs."
+        "text": "Trigger: A hook event name that is not one of the 33 Claude Code events (for example preToolUse); Gemini and Continue files are not checked\n\nClaude Code ignores the entry at runtime, so the guard never runs",
+        "markdown": "**Trigger:** A hook event name that is not one of the 33 Claude Code events (for example `preToolUse`); Gemini and Continue files are not checked\n\nClaude Code ignores the entry at runtime, so the guard never runs"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -541,7 +561,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#hook-008",
        "help": {
-        "text": "apiKeyHelper, awsAuthRefresh, awsCredentialExport, gcpAuthRefresh or otelHeadersHelper in a repository's settings runs that repository's command to produce your credentials."
+        "text": "Trigger: apiKeyHelper, awsAuthRefresh, awsCredentialExport, gcpAuthRefresh or otelHeadersHelper in project .claude/settings*.json\n\nThe repository decides which command produces your credentials, and project helpers run even before folder trust in claude -p ([permissions](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder))",
+        "markdown": "**Trigger:** `apiKeyHelper`, `awsAuthRefresh`, `awsCredentialExport`, `gcpAuthRefresh` or `otelHeadersHelper` in project `.claude/settings*.json`\n\nThe repository decides which command produces your credentials, and project helpers run even before folder trust in `claude -p` ([permissions](https://code.claude.com/docs/en/permissions#what-runs-before-you-trust-a-folder))"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -567,7 +588,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#mcp-001",
        "help": {
-        "text": "Credentials and tool results travel in clear text."
+        "text": "Trigger: http:// or ws:// URL to a non-loopback host\n\nCredentials and tool results in clear text",
+        "markdown": "**Trigger:** `http://` or `ws://` URL to a non-loopback host\n\nCredentials and tool results in clear text"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -593,7 +615,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#mcp-002",
        "help": {
-        "text": "A token in headers or env is committed with the config instead of referenced as ${VAR}."
+        "text": "Trigger: Literal token in headers or env (not ${VAR})\n\nSecret committed with the config",
+        "markdown": "**Trigger:** Literal token in `headers` or `env` (not `${VAR}`)\n\nSecret committed with the config"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -619,7 +642,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#mcp-003",
        "help": {
-        "text": "npx -y without a version, uvx without ==, @latest, an unpinned container image or code run from a URL fetches whatever is latest on every start."
+        "text": "Trigger: npx -y pkg without a version, uvx pkg without ==, @latest, unpinned container image, code run from a URL\n\nEvery start fetches whatever is latest",
+        "markdown": "**Trigger:** `npx -y pkg` without a version, `uvx pkg` without `==`, `@latest`, unpinned container image, code run from a URL\n\nEvery start fetches whatever is latest"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -645,7 +669,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#mcp-004",
        "help": {
-        "text": "An unreviewed, easily replaced binary."
+        "text": "Trigger: Server runs from /tmp, Downloads, Desktop\n\nUnreviewed, easily replaced binary",
+        "markdown": "**Trigger:** Server runs from `/tmp`, `Downloads`, `Desktop`\n\nUnreviewed, easily replaced binary"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -671,7 +696,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#mcp-005",
        "help": {
-        "text": "Flags such as --dangerously-skip-permissions or a shell -c launch."
+        "text": "Trigger: --dangerously-skip-permissions, --allow-all, --no-sandbox, --yolo, shell -c launch\n\nServer's own safety checks disabled",
+        "markdown": "**Trigger:** `--dangerously-skip-permissions`, `--allow-all`, `--no-sandbox`, `--yolo`, shell `-c` launch\n\nServer's own safety checks disabled"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -697,7 +723,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#mcp-006",
        "help": {
-        "text": "Switch to streamable HTTP."
+        "text": "Trigger: type: sse\n\nDeprecated transport",
+        "markdown": "**Trigger:** `type: sse`\n\nDeprecated transport"
        },
        "defaultConfiguration": {
         "level": "note"
@@ -723,7 +750,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#mcp-007",
        "help": {
-        "text": "The filesystem server is rooted at /, ~ or the home directory."
+        "text": "Trigger: Filesystem server rooted at /, ~ or the home directory\n\nWhole-disk access for the model",
+        "markdown": "**Trigger:** Filesystem server rooted at `/`, `~` or the home directory\n\nWhole-disk access for the model"
        },
        "defaultConfiguration": {
         "level": "error"
@@ -749,7 +777,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#mcp-008",
        "help": {
-        "text": "No name to pin, no certificate identity."
+        "text": "Trigger: Remote server addressed by raw IP\n\nNo name to pin, no certificate identity",
+        "markdown": "**Trigger:** Remote server addressed by raw IP\n\nNo name to pin, no certificate identity"
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -775,7 +804,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#sec-001",
        "help": {
-        "text": "A provider key, token, private key, JWT or high-entropy secret assignment. Evidence is redacted."
+        "text": "Trigger: OpenAI, Anthropic, GitHub, GitLab, AWS, Slack, Google, Stripe, npm, Hugging Face and credential broker key formats; private key blocks; JWTs; generic api_key = \"<high-entropy>\" assignments. Placeholders (xxxx, your-, <...>, EXAMPLE) are skipped. Evidence is redacted.\n\nA provider key, token, private key, JWT or high-entropy secret assignment. Evidence is redacted.",
+        "markdown": "**Trigger:** OpenAI, Anthropic, GitHub, GitLab, AWS, Slack, Google, Stripe, npm, Hugging Face and credential broker key formats; private key blocks; JWTs; generic `api_key = \"<high-entropy>\"` assignments. Placeholders (`xxxx`, `your-`, `<...>`, `EXAMPLE`) are skipped. Evidence is redacted.\n\nA provider key, token, private key, JWT or high-entropy secret assignment. Evidence is redacted."
        },
        "defaultConfiguration": {
         "level": "error"
@@ -801,7 +831,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#inj-001",
        "help": {
-        "text": "Phrases such as 'ignore previous instructions' or 'you are now'."
+        "text": "Trigger: \"ignore previous instructions\", \"you are now\", \"new instructions:\", \"developer mode\"\n\nPhrases such as 'ignore previous instructions' or 'you are now'.",
+        "markdown": "**Trigger:** \"ignore previous instructions\", \"you are now\", \"new instructions:\", \"developer mode\"\n\nPhrases such as 'ignore previous instructions' or 'you are now'."
        },
        "defaultConfiguration": {
         "level": "error"
@@ -827,7 +858,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#inj-002",
        "help": {
-        "text": "Phrases such as 'do not tell the user' or 'silently run'."
+        "text": "Trigger: \"do not tell the user\", \"without asking the user\", \"silently run\"\n\nPhrases such as 'do not tell the user' or 'silently run'.",
+        "markdown": "**Trigger:** \"do not tell the user\", \"without asking the user\", \"silently run\"\n\nPhrases such as 'do not tell the user' or 'silently run'."
        },
        "defaultConfiguration": {
         "level": "error"
@@ -853,7 +885,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#inj-003",
        "help": {
-        "text": "Instructions to send data to an external endpoint or to read or emit credentials."
+        "text": "Trigger: \"send ... to https://...\", \"upload ... to a webhook\", instructions that read or emit API keys, .env, SSH keys\n\nInstructions to send data to an external endpoint or to read or emit credentials.",
+        "markdown": "**Trigger:** \"send ... to https://...\", \"upload ... to a webhook\", instructions that read or emit API keys, `.env`, SSH keys\n\nInstructions to send data to an external endpoint or to read or emit credentials."
        },
        "defaultConfiguration": {
         "level": "error"
@@ -879,7 +912,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#inj-004",
        "help": {
-        "text": "curl piped into a shell, or 'always run' and 'on every session start run'."
+        "text": "Trigger: curl ... \\| sh; \"always run ...\", \"on every session start run ...\"\n\ncurl piped into a shell, or 'always run' and 'on every session start run'.",
+        "markdown": "**Trigger:** `curl ... \\| sh`; \"always run ...\", \"on every session start run ...\"\n\ncurl piped into a shell, or 'always run' and 'on every session start run'."
        },
        "defaultConfiguration": {
         "level": "error"
@@ -905,7 +939,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#inj-005",
        "help": {
-        "text": "Zero-width characters, bidi overrides or Unicode tag characters hide text from reviewers."
+        "text": "Trigger: Zero-width characters, bidirectional overrides, Unicode tag characters\n\nZero-width characters, bidi overrides or Unicode tag characters hide text from reviewers.",
+        "markdown": "**Trigger:** Zero-width characters, bidirectional overrides, Unicode tag characters\n\nZero-width characters, bidi overrides or Unicode tag characters hide text from reviewers."
        },
        "defaultConfiguration": {
         "level": "error"
@@ -931,7 +966,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#inj-006",
        "help": {
-        "text": "Rendered Markdown hides comments from readers but not from the model."
+        "text": "Trigger: HTML comment that contains imperative instructions. Low in CLAUDE.md, CLAUDE.local.md and .claude/rules/, because Claude Code strips block-level comments from those before loading them ([memory](https://code.claude.com/docs/en/memory)), though other agents still read them\n\nRendered Markdown hides comments from readers but not from the model.",
+        "markdown": "**Trigger:** HTML comment that contains imperative instructions. Low in `CLAUDE.md`, `CLAUDE.local.md` and `.claude/rules/`, because Claude Code strips block-level comments from those before loading them ([memory](https://code.claude.com/docs/en/memory)), though other agents still read them\n\nRendered Markdown hides comments from readers but not from the model."
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -957,7 +993,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#inj-007",
        "help": {
-        "text": "Encoded payloads are a common way to smuggle instructions past review."
+        "text": "Trigger: Long high-entropy base64 blob\n\nEncoded payloads are a common way to smuggle instructions past review.",
+        "markdown": "**Trigger:** Long high-entropy base64 blob\n\nEncoded payloads are a common way to smuggle instructions past review."
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -983,7 +1020,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#inj-008",
        "help": {
-        "text": "Bypass flags, disabled hooks, blanket approvals or destructive commands in prose."
+        "text": "Trigger: \"--dangerously-skip-permissions\", \"disable hooks\", \"approve everything\", rm -rf ~, chmod 777, force-push to main\n\nBypass flags, disabled hooks, blanket approvals or destructive commands in prose.",
+        "markdown": "**Trigger:** \"--dangerously-skip-permissions\", \"disable hooks\", \"approve everything\", `rm -rf ~`, `chmod 777`, force-push to main\n\nBypass flags, disabled hooks, blanket approvals or destructive commands in prose."
        },
        "defaultConfiguration": {
         "level": "error"
@@ -1009,7 +1047,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#inj-009",
        "help": {
-        "text": "References to ~/.ssh, .aws/credentials, /etc/shadow and similar."
+        "text": "Trigger: \"cat ~/.ssh/...\", \"read .aws/credentials\", \"/etc/shadow\"\n\nReferences to ~/.ssh, .aws/credentials, /etc/shadow and similar.",
+        "markdown": "**Trigger:** \"cat ~/.ssh/...\", \"read .aws/credentials\", \"/etc/shadow\"\n\nReferences to ~/.ssh, .aws/credentials, /etc/shadow and similar."
        },
        "defaultConfiguration": {
         "level": "error"
@@ -1035,7 +1074,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#skill-001",
        "help": {
-        "text": "allowed-tools grants unrestricted Bash, Write or Edit."
+        "text": "Trigger: allowed-tools grants unrestricted Bash or Write/Edit\n\nallowed-tools grants unrestricted Bash, Write or Edit.",
+        "markdown": "**Trigger:** `allowed-tools` grants unrestricted `Bash` or `Write`/`Edit`\n\nallowed-tools grants unrestricted Bash, Write or Edit."
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -1061,7 +1101,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#skill-002",
        "help": {
-        "text": "SKILL.md without front matter, name or description."
+        "text": "Trigger: SKILL.md without front matter, name or description\n\nSKILL.md without front matter, name or description.",
+        "markdown": "**Trigger:** SKILL.md without front matter, name or description\n\nSKILL.md without front matter, name or description."
        },
        "defaultConfiguration": {
         "level": "note"
@@ -1087,7 +1128,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#plugin-001",
        "help": {
-        "text": "Executables in bin/ are on the Bash PATH while the plugin is enabled."
+        "text": "Trigger: Plugin ships a bin/ directory (on the Bash PATH while enabled)\n\nExecutables in bin/ are on the Bash PATH while the plugin is enabled.",
+        "markdown": "**Trigger:** Plugin ships a `bin/` directory (on the Bash PATH while enabled)\n\nExecutables in bin/ are on the Bash PATH while the plugin is enabled."
        },
        "defaultConfiguration": {
         "level": "note"
@@ -1113,7 +1155,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#plugin-002",
        "help": {
-        "text": "The plugin name uses a reserved prefix, or a component path in plugin.json leaves the plugin directory."
+        "text": "Trigger: plugin.json name starts with a reserved prefix (claude-, anthropic-, anthropics-, cc-plugin-), or a component path (skills, commands, agents, hooks, mcpServers, lspServers, outputStyles, workflows) is absolute or leaves the plugin directory\n\nThe plugin name uses a reserved prefix, or a component path in plugin.json leaves the plugin directory.",
+        "markdown": "**Trigger:** `plugin.json` name starts with a reserved prefix (`claude-`, `anthropic-`, `anthropics-`, `cc-plugin-`), or a component path (`skills`, `commands`, `agents`, `hooks`, `mcpServers`, `lspServers`, `outputStyles`, `workflows`) is absolute or leaves the plugin directory\n\nThe plugin name uses a reserved prefix, or a component path in plugin.json leaves the plugin directory."
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -1139,7 +1182,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#file-001",
        "help": {
-        "text": "Anyone on the machine could add hooks, permissions or instructions."
+        "text": "Trigger: Config file is world-writable\n\nAnyone on the machine could add hooks, permissions or instructions.",
+        "markdown": "**Trigger:** Config file is world-writable\n\nAnyone on the machine could add hooks, permissions or instructions."
        },
        "defaultConfiguration": {
         "level": "warning"
@@ -1165,7 +1209,8 @@
        },
        "helpUri": "https://github.com/basitalisandhu/agent-config-audit/blob/main/docs/checks.md#cfg-001",
        "help": {
-        "text": "Most hosts silently ignore a file that fails to parse, so its protections are not applied."
+        "text": "Trigger: JSON config does not parse (silently ignored by hosts)\n\nMost hosts silently ignore a file that fails to parse, so its protections are not applied.",
+        "markdown": "**Trigger:** JSON config does not parse (silently ignored by hosts)\n\nMost hosts silently ignore a file that fails to parse, so its protections are not applied."
        },
        "defaultConfiguration": {
         "level": "note"
